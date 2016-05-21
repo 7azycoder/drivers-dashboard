@@ -4,4 +4,5 @@ require_once 'core/init.php';
 $user = new User();
 $user->logout();
 
-Redirect::to('index1.php');
+Session::flash('home', '<div class=" alert alert-success" role="alert">You have logged out successfully!</div>');					  
+Redirect::to('index.php');

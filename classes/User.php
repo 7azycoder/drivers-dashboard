@@ -30,7 +30,6 @@ class User {
             }
       }
 
-
       public function update($fields = array(), $id = null) {
    
           if(!$id && $this->isLoggedIn()) {

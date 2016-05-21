@@ -1,27 +1,61 @@
 <?php
-
 require_once 'core/init.php';
-
 $user = new User();
-
 if(!$user->isLoggedIn()){
-	Redirect::to('index.php');
+   Redirect::to('index.php');
+}
+$result = array();
+	if(isset($_FILES['fileToUpload'])){
 
-} else {
 
-	$data = $user->data();
-/*	<h3><?php echo escape($data->username); ?></h3>
-	<p>Name    	: <?php echo escape($data->name); ?></p>
-	<p>Address 	: <?php echo escape($data->address); ?></p>
-	<p>Email 1 	: <?php echo escape($data->email1); ?></p>
-	<p>Email 2 	: <?php echo escape($data->email2); ?></p>
-	<p>Contact 1: <?php echo escape($data->contact1); ?></p>
-	<p>Contact 2: <?php echo escape($data->contact2); ?></p> */
+								$data = $user->data();
+								$errors= array();
+
+								$path = 'uploads/users/' . $data->username;
+
+								if (!file_exists($path)) {
+								    mkdir($path,0777);
+								}
+
+								$target_file = $path . "/" . basename($_FILES["fileToUpload"]["name"]);
+								$uploadOk = 1;
+								$FileType = pathinfo($target_file,PATHINFO_EXTENSION);
+								
+
+								// Check if file already exists
+								if (file_exists($target_file)) {
+								    $errors[]="File already exists.";
+								    $uploadOk = 0;
+								}
+								// Check file size
+								if ($_FILES["fileToUpload"]["size"] > 20971520) {
+								    $errors[]="Your file is too large ( greater than 20 MB ).";
+								    $uploadOk = 0;
+								}
+								// Allow certain file formats
+								if($FileType != "doc" && $FileType != "pdf" && $FileType != "docx" && $FileType != "txt"  ) {
+								    $errors[]= "Only pdf, txt , doc & docx files can be uploaded !";
+								    $uploadOk = 0;
+								}
+								// Check if $uploadOk is set to 0 by an error
+								if ($uploadOk == 0 ) {
+								    foreach ($errors as $error) {
+								        $result[] = '<div class="alert alert-warning" role="alert">' . $error . '</div>' ;
+								    }
+								// if everything is ok, try to upload file
+								} else {
+								    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+								        $result[] = '<div class="alert alert-success" role="alert">The file : '. basename( $_FILES["fileToUpload"]["name"]). ' has been uploaded.</div>';
+
+								    } else {
+								        $result[] = '<div class="alert alert-success" role="alert">Sorry, there was an error uploading your file.</div>';
+								    }
+								}
+
+
+					}
 
 ?>
-
-	
-	
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +119,7 @@ if(!$user->isLoggedIn()){
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> <?php echo escape($data->username); ?>
+								<i class="halflings-icon white user"></i> <?php echo escape($user->data()->username); ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -119,12 +153,10 @@ if(!$user->isLoggedIn()){
 						<li><a href="upload.php"><i class="icon-upload"></i><span class="hidden-tablet"> Upload File</span></a></li>	
 						<li><a href="payrolls.php"><i class="icon-file"></i><span class="hidden-tablet"> Payrolls</span></a></li>
 						<li><a href="calendar.php"><i class="icon-calendar"></i><span class="hidden-tablet"> Calendar</span></a></li>
-
 					</ul>
 				</div>
 			</div>
 			<!-- end: Main Menu -->
-			
 			<noscript>
 				<div class="alert alert-block span10">
 					<h4 class="alert-heading">Warning!</h4>
@@ -139,51 +171,56 @@ if(!$user->isLoggedIn()){
 			<ul class="breadcrumb">
 				<li>
 					<i class="icon-home"></i>
-					<a href="index.html">Home</a> 
-					<i class="icon-angle-right"></i>
+					<a href="index.html">Home</a>
+					<i class="icon-angle-right"></i> 
 				</li>
-				<li><a href="profile.php">Profile</a></li>
-			</ul>
-
-			
-
-			
-			<div class="row-fluid">
-				
-				
+				<li>
 					
-				<div class="box black span12" onTablet="span12" onDesktop="span12">
-					<div class="box-header">
-						<h2><i class="halflings-icon white user"></i><span class="break"></span>Profile</h2>
+					<a href="upload.php">Upload Files</a>
+				</li>
+			</ul>
+			
+			<div class="row-fluid sortable">
+				<div class="box span12">
+					<div class="container">
+						<?php
+						foreach ($result as $statement) {
+						 echo '<div>' .  $statement . '</div>';
+							}	
+						?>
+					</div>
+					<div class="box-header" data-original-title>
+						<h2><i class="halflings-icon edit"></i><span class="break"></span>Upload a File</h2>
 						<div class="box-icon">
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+							<a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
+							<a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+							<a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
 						</div>
 					</div>
 					<div class="box-content">
-						<ul class="dashboard-list metro">
+						<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+						  <fieldset>
+							<div class="control-group">
+							  <label class="control-label" for="fileToUpload">Choose File to Upload</label>
+							  <div class="controls">
+								<input class="input-file uniform_on" name="fileToUpload" id="fileToUpload" type="file">
+							  </div>
+							</div>          
 							
-							<li class="red">
-								
-								&nbsp&nbsp<strong>Name &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:&nbsp</strong><?php echo escape($data->name); ?><br>
-								&nbsp&nbsp<strong>Address&nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->address); ?><br>
-								&nbsp&nbsp<strong>Email 1 &nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->email1); ?><br>
-								
-								&nbsp&nbsp<strong>Email 2 &nbsp&nbsp&nbsp&nbsp  :&nbsp</strong><?php echo escape($data->email2); ?><br>
-								&nbsp&nbsp<strong>Contact 1 :&nbsp</strong><?php echo escape($data->contact1); ?><br>
-								&nbsp&nbsp<strong>Contact 2 :&nbsp</strong><?php echo escape($data->contact2); ?><br>                                  
-							</li>
+							<div class="form-actions">
+							  <button type="submit" class="btn btn-primary">Upload File</button>
 							
-						</ul>
+							</div>
+						  </fieldset>
+						</form>   
+
 					</div>
 				</div><!--/span-->
-				
-				
+
+			</div><!--/row-->
+
 			
-			</div>
-			
-			
-       
+    
 
 	</div><!--/.fluid-container-->
 	
@@ -210,7 +247,7 @@ if(!$user->isLoggedIn()){
 	<footer>
 
 		<p>
-			<span style="text-align:left;float:left">&copy; 2016 <a href="www.i-waytrans.com" alt="">I-waytransport Inc</a></span>
+			<span style="text-align:left;float:left">&copy; 2013 <a href="http://jiji262.github.io/Bootstrap_Metro_Dashboard/" alt="Bootstrap_Metro_Dashboard">Bootstrap Metro Dashboard</a></span>
 			
 		</p>
 
@@ -276,9 +313,3 @@ if(!$user->isLoggedIn()){
 	
 </body>
 </html>
-
-<?php
-
-}
-
-

@@ -1,27 +1,21 @@
 <?php
-
 require_once 'core/init.php';
-
 $user = new User();
-
 if(!$user->isLoggedIn()){
-	Redirect::to('index.php');
+   Redirect::to('index.php');
+}
+else{
 
-} else {
+$data = $user->data();
 
-	$data = $user->data();
-/*	<h3><?php echo escape($data->username); ?></h3>
-	<p>Name    	: <?php echo escape($data->name); ?></p>
-	<p>Address 	: <?php echo escape($data->address); ?></p>
-	<p>Email 1 	: <?php echo escape($data->email1); ?></p>
-	<p>Email 2 	: <?php echo escape($data->email2); ?></p>
-	<p>Contact 1: <?php echo escape($data->contact1); ?></p>
-	<p>Contact 2: <?php echo escape($data->contact2); ?></p> */
+$dir = "uploads/users/" . $data->username ;
+if (!is_dir($dir)) {
+    mkdir($dir,0777);
+}
+
 
 ?>
 
-	
-	
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +79,7 @@ if(!$user->isLoggedIn()){
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> <?php echo escape($data->username); ?>
+								<i class="halflings-icon white user"></i> <?php echo escape($user->data()->username); ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -119,12 +113,10 @@ if(!$user->isLoggedIn()){
 						<li><a href="upload.php"><i class="icon-upload"></i><span class="hidden-tablet"> Upload File</span></a></li>	
 						<li><a href="payrolls.php"><i class="icon-file"></i><span class="hidden-tablet"> Payrolls</span></a></li>
 						<li><a href="calendar.php"><i class="icon-calendar"></i><span class="hidden-tablet"> Calendar</span></a></li>
-
 					</ul>
 				</div>
 			</div>
 			<!-- end: Main Menu -->
-			
 			<noscript>
 				<div class="alert alert-block span10">
 					<h4 class="alert-heading">Warning!</h4>
@@ -142,48 +134,75 @@ if(!$user->isLoggedIn()){
 					<a href="index.html">Home</a> 
 					<i class="icon-angle-right"></i>
 				</li>
-				<li><a href="profile.php">Profile</a></li>
+				<li><a href="documents.php">Documents</a></li>
 			</ul>
 
-			
+			<div class="row-fluid sortable">
+				<div class="container">
+				<?php
 
-			
-			<div class="row-fluid">
-				
-				
-					
-				<div class="box black span12" onTablet="span12" onDesktop="span12">
-					<div class="box-header">
-						<h2><i class="halflings-icon white user"></i><span class="break"></span>Profile</h2>
+				if(Session::exists('dash')){
+						echo  Session::flash('dash') ;
+					}
+
+				?>
+
+				</div>		
+				<div class="box span12">
+					<div class="box-header" data-original-title>
+						<h2><i class="halflings-icon user"></i><span class="break"></span>Documents</h2>
 						<div class="box-icon">
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+							<a href="#" class="btn-setting"><i class="halflings-icon wrench"></i></a>
+							<a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+							<a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
 						</div>
 					</div>
 					<div class="box-content">
-						<ul class="dashboard-list metro">
+						<table class="table table-striped table-bordered bootstrap-datatable datatable">
+						  <thead>
+							  <tr>
+								  <th>Filename</th>
+								  <th>Actions</th>
+						
+							  </tr>
+						  </thead>   
+						  <tbody>
+						
 							
-							<li class="red">
-								
-								&nbsp&nbsp<strong>Name &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:&nbsp</strong><?php echo escape($data->name); ?><br>
-								&nbsp&nbsp<strong>Address&nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->address); ?><br>
-								&nbsp&nbsp<strong>Email 1 &nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->email1); ?><br>
-								
-								&nbsp&nbsp<strong>Email 2 &nbsp&nbsp&nbsp&nbsp  :&nbsp</strong><?php echo escape($data->email2); ?><br>
-								&nbsp&nbsp<strong>Contact 1 :&nbsp</strong><?php echo escape($data->contact1); ?><br>
-								&nbsp&nbsp<strong>Contact 2 :&nbsp</strong><?php echo escape($data->contact2); ?><br>                                  
-							</li>
+							<?php
+							if ($handle = opendir($dir)) {
+							    while (false !== ($entry = readdir($handle))) {
+							        if ($entry != "." && $entry != ".." && is_file($dir .'/'.$entry)) {
+							            echo "<tr><td>".$entry."</td>
+							            <td class='center'>
+									<a class='btn btn-success'href='view.php?filename=".$entry."'>
+										<i class='halflings-icon white zoom-in'></i>  
+									</a>
+									<a class='btn btn-primary'href='download.php?filename=".$entry."'>
+										<i class='halflings-icon white download'></i> 
+									</a>
+									<a class='btn btn-danger'href='delete.php?filename=".$entry."'>
+										<i class='halflings-icon white trash'></i> 
+									</a>
+								</td></tr>";
+							        }
+							    }
+							    closedir($handle);
+							}
+
+							?>
 							
-						</ul>
+							
+							
+						  </tbody>
+					  </table>            
 					</div>
 				</div><!--/span-->
-				
-				
 			
-			</div>
+			</div><!--/row-->
+
 			
 			
-       
 
 	</div><!--/.fluid-container-->
 	
@@ -210,7 +229,7 @@ if(!$user->isLoggedIn()){
 	<footer>
 
 		<p>
-			<span style="text-align:left;float:left">&copy; 2016 <a href="www.i-waytrans.com" alt="">I-waytransport Inc</a></span>
+			<span style="text-align:left;float:left">&copy; 2016 <a href="www.i-waytrans.com" alt="">I-way Transport Inc</a></span>
 			
 		</p>
 

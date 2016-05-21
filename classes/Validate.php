@@ -50,7 +50,10 @@ class Validate{
 								$this->addError("{$item} is not recognised.");
 							}
 						break;
-
+						case 'email_format':
+							if (!filter_var($value, FILTER_VALIDATE_EMAIL)) 
+       							$this->addError("Invalid email format."); 
+						break;
 					}
 
 				}

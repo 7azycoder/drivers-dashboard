@@ -7,21 +7,15 @@ $user = new User();
 if(!$user->isLoggedIn()){
 	Redirect::to('index.php');
 
-} else {
+}
+else {
 
-	$data = $user->data();
-/*	<h3><?php echo escape($data->username); ?></h3>
-	<p>Name    	: <?php echo escape($data->name); ?></p>
-	<p>Address 	: <?php echo escape($data->address); ?></p>
-	<p>Email 1 	: <?php echo escape($data->email1); ?></p>
-	<p>Email 2 	: <?php echo escape($data->email2); ?></p>
-	<p>Contact 1: <?php echo escape($data->contact1); ?></p>
-	<p>Contact 2: <?php echo escape($data->contact2); ?></p> */
+
+
+
 
 ?>
 
-	
-	
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,7 +61,7 @@ if(!$user->isLoggedIn()){
 </head>
 
 <body>
-		<!-- start: Header -->
+			<!-- start: Header -->
 	<div class="navbar">
 		<div class="navbar-inner">
 			<div class="container-fluid">
@@ -85,7 +79,7 @@ if(!$user->isLoggedIn()){
 						<!-- start: User Dropdown -->
 						<li class="dropdown">
 							<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-								<i class="halflings-icon white user"></i> <?php echo escape($data->username); ?>
+								<i class="halflings-icon white user"></i> <?php echo escape($user->data()->username); ?>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
@@ -119,12 +113,10 @@ if(!$user->isLoggedIn()){
 						<li><a href="upload.php"><i class="icon-upload"></i><span class="hidden-tablet"> Upload File</span></a></li>	
 						<li><a href="payrolls.php"><i class="icon-file"></i><span class="hidden-tablet"> Payrolls</span></a></li>
 						<li><a href="calendar.php"><i class="icon-calendar"></i><span class="hidden-tablet"> Calendar</span></a></li>
-
 					</ul>
 				</div>
 			</div>
 			<!-- end: Main Menu -->
-			
 			<noscript>
 				<div class="alert alert-block span10">
 					<h4 class="alert-heading">Warning!</h4>
@@ -139,58 +131,160 @@ if(!$user->isLoggedIn()){
 			<ul class="breadcrumb">
 				<li>
 					<i class="icon-home"></i>
-					<a href="index.html">Home</a> 
-					<i class="icon-angle-right"></i>
+					<a href="index.html">Home</a>
+					<i class="icon-angle-right"></i> 
 				</li>
-				<li><a href="profile.php">Profile</a></li>
-			</ul>
-
-			
-
-			
-			<div class="row-fluid">
-				
-				
+				<li>
 					
-				<div class="box black span12" onTablet="span12" onDesktop="span12">
-					<div class="box-header">
-						<h2><i class="halflings-icon white user"></i><span class="break"></span>Profile</h2>
+					<a href="edit_profile.php">Edit Profile</a>
+				</li>
+			</ul>
+			
+			
+
+			<div class="row-fluid sortable">
+				<div class="container">
+
+				<?php
+						if(Input::exists()){
+							if(Token::check(Input::get('token'))){
+								$validate = new Validate();
+								$validation = $validate->check($_POST, array(
+									'name' => array(
+									'required' => true,
+									'min' => 2,
+									'max' => 50
+									),
+									'address' => array(
+							        'required' => true,
+							        'min' => 4,
+							        'max' => 150
+							        ),
+							        'email1' => array(
+							        'required' => true,
+							        'min' => 2,
+							        'max' => 50,
+							        'email_format' => true
+							        ),
+							       'email2' => array(
+							        'min' => 2,
+							        'max' => 50,
+							        'email_format' => true
+							        ),
+							      'contact1' => array(
+							        'required' => true,
+							        'min' => 6,
+							        'max' => 15
+							        ),
+							       'contact2' => array(
+							        'min' => 6,
+							        'max' => 15
+							        )
+							      
+								));
+								if($validation->passed()){
+									try{
+										$user->update(array(
+											'name' => Input::get('name'),
+							                'address'=> Input::get('address'),
+							                'email1' => Input::get('email1'),
+							                'email2' => Input::get('email2'), 
+							                'contact1' => Input::get('contact1'),
+							                'contact2' => Input::get('contact2')
+											));
+										echo '<div class="alert alert-success" role="alert"> Your details have been updated !</div>';
+										//Session::flash('profile', '<div class="alert alert-success" role="alert">Your details have been updated !</div>');
+										//Redirect::to('profile.php');
+
+									} catch(Exception $e){
+										die($e->getMessage());
+									}
+
+
+								} else{
+									foreach($validation->errors() as $error){
+										echo '<div class="alert alert-warning" role="alert">' . $error . '</div>';
+									}
+								}
+							}
+						}
+						
+				?>
+				</div>
+				
+				<div class="box span12">
+					<div class="box-header" data-original-title>
+						<h2><i class="halflings-icon edit"></i><span class="break"></span>Form Elements</h2>
 						<div class="box-icon">
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+						
+							<a href="#" class="btn-minimize"><i class="halflings-icon chevron-up"></i></a>
+							<a href="#" class="btn-close"><i class="halflings-icon remove"></i></a>
 						</div>
 					</div>
 					<div class="box-content">
-						<ul class="dashboard-list metro">
-							
-							<li class="red">
-								
-								&nbsp&nbsp<strong>Name &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:&nbsp</strong><?php echo escape($data->name); ?><br>
-								&nbsp&nbsp<strong>Address&nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->address); ?><br>
-								&nbsp&nbsp<strong>Email 1 &nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->email1); ?><br>
-								
-								&nbsp&nbsp<strong>Email 2 &nbsp&nbsp&nbsp&nbsp  :&nbsp</strong><?php echo escape($data->email2); ?><br>
-								&nbsp&nbsp<strong>Contact 1 :&nbsp</strong><?php echo escape($data->contact1); ?><br>
-								&nbsp&nbsp<strong>Contact 2 :&nbsp</strong><?php echo escape($data->contact2); ?><br>                                  
-							</li>
-							
-						</ul>
+						<form class="form-horizontal" action="" method="post">
+							<fieldset>
+							  <div class="control-group">
+								<label class="control-label" for="name">Name</label>
+								<div class="controls">
+								  <input class="input-xlarge focused" name="name" id="name" type="text" value="<?php echo escape($user->data()->name); ?>">
+								</div>
+							  </div>
+
+							  <div class="control-group">
+								<label class="control-label" for="focusedInput">Address</label>
+								<div class="controls">
+								  <input class="input-xlarge focused" name="address" id="address" type="text" value="<?php echo escape($user->data()->address); ?>">
+								</div>
+							  </div>
+
+							  <div class="control-group">
+								<label class="control-label" for="focusedInput">Email 1</label>
+								<div class="controls">
+								  <input class="input-xlarge focused" name="email1" id="email1" type="text" value="<?php echo escape($user->data()->email1); ?>">
+								</div>
+							  </div>
+
+							  <div class="control-group">
+								<label class="control-label" for="focusedInput">Email 2</label>
+								<div class="controls">
+								  <input class="input-xlarge focused" name="email2" id="email2" type="text" value="<?php echo escape($user->data()->email2); ?>">
+								</div>
+							  </div>
+
+							  <div class="control-group">
+								<label class="control-label" for="contact1">Contact 1</label>
+								<div class="controls">
+								  <input class="input-xlarge focused" name="contact1" id="contact1" type="text" value="<?php echo escape($user->data()->contact1); ?>">
+								</div>
+							  </div>
+
+							  <div class="control-group">
+								<label class="control-label" for="contact2">Contact 2</label>
+								<div class="controls">
+								  <input class="input-xlarge focused" name="contact2" id="contact2" type="text" value="<?php echo escape($user->data()->contact2); ?>">
+								</div>
+							  </div>
+							  
+							  <div class="form-actions">
+								<button type="submit" class="btn btn-primary" >Save changes</button>
+								<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+								</div>
+							</fieldset>
+						  </form>
+					
 					</div>
 				</div><!--/span-->
-				
-				
 			
-			</div>
+			</div><!--/row-->
 			
-			
-       
+
 
 	</div><!--/.fluid-container-->
 	
 			<!-- end: Content -->
 		</div><!--/#content.span10-->
 		</div><!--/fluid-row-->
-		
 	<div class="modal hide fade" id="myModal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
@@ -210,7 +304,7 @@ if(!$user->isLoggedIn()){
 	<footer>
 
 		<p>
-			<span style="text-align:left;float:left">&copy; 2016 <a href="www.i-waytrans.com" alt="">I-waytransport Inc</a></span>
+			<span style="text-align:left;float:left">&copy; 2016 <a href="www.i-waytrans.com" alt="">I-way Transport Inc</a></span>
 			
 		</p>
 
@@ -278,7 +372,6 @@ if(!$user->isLoggedIn()){
 </html>
 
 <?php
+ }
 
-}
-
-
+ ?>

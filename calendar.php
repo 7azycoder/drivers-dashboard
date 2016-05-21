@@ -1,27 +1,15 @@
 <?php
-
 require_once 'core/init.php';
-
 $user = new User();
-
 if(!$user->isLoggedIn()){
-	Redirect::to('index.php');
+   Redirect::to('index.php');
+}
+else{
 
-} else {
-
-	$data = $user->data();
-/*	<h3><?php echo escape($data->username); ?></h3>
-	<p>Name    	: <?php echo escape($data->name); ?></p>
-	<p>Address 	: <?php echo escape($data->address); ?></p>
-	<p>Email 1 	: <?php echo escape($data->email1); ?></p>
-	<p>Email 2 	: <?php echo escape($data->email2); ?></p>
-	<p>Contact 1: <?php echo escape($data->contact1); ?></p>
-	<p>Contact 2: <?php echo escape($data->contact2); ?></p> */
+$data = $user->data();
 
 ?>
 
-	
-	
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,7 +55,7 @@ if(!$user->isLoggedIn()){
 </head>
 
 <body>
-		<!-- start: Header -->
+	<!-- start: Header -->
 	<div class="navbar">
 		<div class="navbar-inner">
 			<div class="container-fluid">
@@ -124,7 +112,6 @@ if(!$user->isLoggedIn()){
 				</div>
 			</div>
 			<!-- end: Main Menu -->
-			
 			<noscript>
 				<div class="alert alert-block span10">
 					<h4 class="alert-heading">Warning!</h4>
@@ -135,55 +122,42 @@ if(!$user->isLoggedIn()){
 			<!-- start: Content -->
 			<div id="content" class="span10">
 			
-			
+						
 			<ul class="breadcrumb">
 				<li>
 					<i class="icon-home"></i>
 					<a href="index.html">Home</a> 
 					<i class="icon-angle-right"></i>
 				</li>
-				<li><a href="profile.php">Profile</a></li>
+				<li><a href="calendar.php">Calendar</a></li>
 			</ul>
 
-			
-
-			
-			<div class="row-fluid">
-				
-				
-					
-				<div class="box black span12" onTablet="span12" onDesktop="span12">
-					<div class="box-header">
-						<h2><i class="halflings-icon white user"></i><span class="break"></span>Profile</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+			<div class="row-fluid sortable">
+				<div class="box span12">
+				  <div class="box-header" data-original-title>
+					  <h2><i class="halflings-icon calendar"></i><span class="break"></span>Calendar</h2>
+				  </div>
+				  <div class="box-content">
+					<div id="external-events" class="span3 hidden-phone hidden-tablet">
+						<h4>Draggable Events</h4>
+						<div class="external-event badge">Default</div>
+						<div class="external-event badge badge-success">Completed</div>
+						<div class="external-event badge badge-warning">Warning</div>
+						<div class="external-event badge badge-important">Important</div>
+						<div class="external-event badge badge-info">Info</div>
+						<div class="external-event badge badge-inverse">Other</div>
+						<p>
+						<label for="drop-remove"><input type="checkbox" id="drop-remove" /> remove after drop</label>
+						</p>
 						</div>
+
+						<div id="calendar" class="span9"></div>
+
+						<div class="clearfix"></div>
 					</div>
-					<div class="box-content">
-						<ul class="dashboard-list metro">
-							
-							<li class="red">
-								
-								&nbsp&nbsp<strong>Name &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:&nbsp</strong><?php echo escape($data->name); ?><br>
-								&nbsp&nbsp<strong>Address&nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->address); ?><br>
-								&nbsp&nbsp<strong>Email 1 &nbsp&nbsp&nbsp&nbsp :&nbsp</strong><?php echo escape($data->email1); ?><br>
-								
-								&nbsp&nbsp<strong>Email 2 &nbsp&nbsp&nbsp&nbsp  :&nbsp</strong><?php echo escape($data->email2); ?><br>
-								&nbsp&nbsp<strong>Contact 1 :&nbsp</strong><?php echo escape($data->contact1); ?><br>
-								&nbsp&nbsp<strong>Contact 2 :&nbsp</strong><?php echo escape($data->contact2); ?><br>                                  
-							</li>
-							
-						</ul>
-					</div>
-				</div><!--/span-->
-				
-				
-			
-			</div>
-			
-			
-       
+				</div>
+			</div><!--/row-->
+		
 
 	</div><!--/.fluid-container-->
 	
@@ -210,7 +184,7 @@ if(!$user->isLoggedIn()){
 	<footer>
 
 		<p>
-			<span style="text-align:left;float:left">&copy; 2016 <a href="www.i-waytrans.com" alt="">I-waytransport Inc</a></span>
+			<span style="text-align:left;float:left">&copy; 2016 <a href="" alt="">I-way Transport Inc</a></span>
 			
 		</p>
 
@@ -280,5 +254,4 @@ if(!$user->isLoggedIn()){
 <?php
 
 }
-
 
