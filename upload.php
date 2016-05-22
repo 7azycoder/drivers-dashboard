@@ -184,7 +184,7 @@ $result = array();
 				<div class="box span12">
 					<div class="container">
 						<?php
-						foreach ($result as $statement) {
+							foreach ($result as $statement) {
 						 echo '<div>' .  $statement . '</div>';
 							}	
 						?>
