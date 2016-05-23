@@ -1,38 +1,3 @@
-<?php
-			require_once 'core/init.php';
-
-					if(Input::exists()){
-						$errors= array();
-						if(Token::check(Input::get('token'))){
-							$validate = new Validate();
-							$validation = $validate->check($_POST, array(
-								'username' => array('required' => true),
-								'password' => array('required' =>true)
-								));
-
-							if($validation->passed()){
-								$user = new User();
-
-								$remember = (Input::get('remember') === 'on') ? true : false ;
-								$login = $user->login(Input::get('username'),Input::get('password'),$remember);
-
-								if($login){
-									Redirect::to('profile.php');
-								} else {
-
-									$errors[] = '<div class="alert alert-warning" role="alert"> Sorry , logging in failed .</div>';
-								}
-							} else {
-								
-								foreach ($validation->errors() as $error) {
-								 $errors[] =  '<div class="alert alert-warning" role="alert">'. $error. '</div>';
-								}
-							}
-						}
-					}
-
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,96 +39,7 @@
 	
   <body>
 		
-		<!--Wrapper Section Start Here -->
-		<div id="wrapper" class="homepage homepage-1" style="padding-top: 0px;">
-			<!--header Section Start Here -->
-			<header id="header" class="header normal">
-				<!-- primary header Start Here -->
-				<div class="primary-header">
-					<div class="container">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6">
-								<div class="mail">
-									<img src="images/icon-mail.png" alt="">
-									<span>Email us at : <a class="email-us" href="mailto:dispatch@i-waytransport.com">dispatch@i-waytrans.com</a></span>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6">
-								<div class="social-wrap clearfix">
-									<a href="#" class="request">Driver Portal</a>
-									<ul class="social">
-										<li>
-											<a href="#"> <i class="fa fa-facebook"></i> </a>
-										</li>
-										<li>
-											<a href="#"> <i class="fa fa-twitter"></i> </a>
-										</li>
-										<li>
-											<a href="#"> <i class="fa fa-google-plus"></i> </a>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- primary header Ends Here -->
-				<!-- main header Starts Here -->
-				<div class="main-header">
-					<div class="container">
-						<div class="row">
-							<div class="col-xs-12 hidden-xs">
-
-								<div class="call-us">
-									<ul>
-										<li>
-											<img src="images/iphone.png" alt="">
-											<span class="transport">CALL US NOW FOR <span></span> YOUR TRANSPORT</span>
-										</li>
-										<li>
-											<a href="tel:5917890123">591 7890 123</a>
-										</li>
-									</ul>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-3">
-								<a href="#" class="logo"> <img src="images/i-waytrans.jpg" alt=""> </a>
-
-							</div>
-							<div class="col-xs-12 col-sm-9 custom-nav">
-								<nav>
-									<div id="cssmenu"><div id="menu-button">Menu</div>
-										<ul class="navigation">
-											<li class="active ">
-												<a href="index.php">Home</a>
-											</li>
-
-											<li class="active ">
-												<a href="login.php">Login</a>
-											</li>
-
-											<li class="active ">
-												<a href="register.php">Register</a>
-											</li>
-
-											
-											
-										</ul>
-									</div>
-								</nav>
-
-								<div class="nav-icon">
-									<span></span>
-									<span></span>
-									<span></span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- main header Ends Here -->
-			</header>
-			<!--header Section Ends Here -->
+		<?php require_once('header.php') ; ?>
 		<!-- banner -->
 	<div class="banner-1">
 		
@@ -173,16 +49,38 @@
 	<div class="contact">
 			<div class="container">
 				<h3>Login to your account</h3>
-
 				<?php
+					require_once 'core/init.php';
 
-				foreach ($errors as $statement) {
-						 echo '<div>' .  $statement . '</div>';
+					if(Input::exists()){
+						if(Token::check(Input::get('token'))){
+							$validate = new Validate();
+							$validation = $validate->check($_POST, array(
+								'username' => array('required' => true),
+								'password' => array('required' =>true)
+								));
+
+							if($validation->passed()){
+								$user = new User();
+
+								$remember = (Input::get('remember') === 'on') ? true : false ;
+								$login = $user->login(Input::get('username'),Input::get('password'),$remember);
+
+								if($login){
+									Redirect::to('profile.php');
+								} else {
+									echo '<div class="alert alert-warning" role="alert"> Sorry , logging in failed .</div>';
+								}
+							} else {
+								foreach ($validation->errors() as $error) {
+								 echo '<div class="alert alert-warning" role="alert">'. $error. '</div>';
+								}
+							}
+						}
 					}
 
+					?>
 
-				?>
-				
 				<!--div class=" map">
 					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.91163207516!2d2.3470599!3d48.85885894999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e1f06e2b70f%3A0x40b82c3688c9460!2sParis%2C+France!5e0!3m2!1sen!2sin!4v1436340519910" allowfullscreen=""></iframe>				
 				</div-->
@@ -242,40 +140,8 @@
 
 <!--  footer -->
 
-<!-- Map Section
-   ================================================== -->
-   <section id="map">
 
-      <p class="map-error">Something went wrong... Unable to load map... Please try to enable javascript</p>
-
-   </section> <!-- Map Section End-->
-<footer>
-   		<div class="container">
-
-      <div class="row-new">
-
-         <div class="col g-7">
-            <ul class="copyright">
-               <li>&copy; 2014 Kreative</li>
-               <li>Design by <a href="http://www.styleshout.com/" title="Styleshout">Styleshout</a></li>               
-            </ul>
-         </div>
-
-         <div class="col g-5 pull-right">
-            <ul class="social-links">
-               <li><a href="#"><i class="icon-facebook"></i></a></li>
-               <li><a href="#"><i class="icon-twitter"></i></a></li>
-               <li><a href="#"><i class="icon-google-plus-sign"></i></a></li>
-               <li><a href="#"><i class="icon-linkedin"></i></a></li>
-               <li><a href="#"><i class="icon-skype"></i></a></li>
-               <li><a href="#"><i class="icon-rss-sign"></i></a></li>
-            </ul>
-         </div>
-
-      </div>
-      </div>
-
-   </footer> <!-- Footer End-->
+<?php require_once('footer.php') ; ?>
 
 	
 		</div>

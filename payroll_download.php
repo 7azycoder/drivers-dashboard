@@ -121,7 +121,7 @@ set_time_limit(0);
 
 $data = $user->data();
 //path to the file
-$file_path='uploads/payrolls/'. $data->username . "/" . $_REQUEST['filename'];
+$file_path='uploads/'. $data->username . "/payrolls/" . $_REQUEST['filename'];
 
 
 //Call the download function with file path,file name and file type

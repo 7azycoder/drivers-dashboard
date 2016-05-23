@@ -6,12 +6,11 @@ if(!$user->isLoggedIn()){
 }
 else{
 
+
 $data = $user->data();
 
-$dir = "uploads/users/" . $data->username ;
-if (!is_dir($dir)) {
-    mkdir($dir,0777);
-}
+
+$dir = "uploads/" . $data->username;
 
 
 ?>
@@ -141,8 +140,8 @@ if (!is_dir($dir)) {
 				<div class="container">
 				<?php
 
-				if(Session::exists('dash')){
-						echo  Session::flash('dash') ;
+				if(Session::exists('home')){
+						echo  Session::flash('home') ;
 					}
 
 				?>

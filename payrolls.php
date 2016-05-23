@@ -8,9 +8,9 @@ else{
 
 $data = $user->data();
 
-$path = 'uploads/payrolls/' . $data->username . '/';
+$path = 'uploads/' . $data->username . '/payrolls';
 
-if (!is_dir($path)) {
+if (!file_exists($path)) {
     mkdir($path,0777);
 }
 

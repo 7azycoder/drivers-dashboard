@@ -4,56 +4,6 @@ $user = new User();
 if(!$user->isLoggedIn()){
    Redirect::to('index.php');
 }
-$result = array();
-	if(isset($_FILES['fileToUpload'])){
-
-
-								$data = $user->data();
-								$errors= array();
-
-								$path = 'uploads/users/' . $data->username;
-
-								if (!file_exists($path)) {
-								    mkdir($path,0777);
-								}
-
-								$target_file = $path . "/" . basename($_FILES["fileToUpload"]["name"]);
-								$uploadOk = 1;
-								$FileType = pathinfo($target_file,PATHINFO_EXTENSION);
-								
-
-								// Check if file already exists
-								if (file_exists($target_file)) {
-								    $errors[]="File already exists.";
-								    $uploadOk = 0;
-								}
-								// Check file size
-								if ($_FILES["fileToUpload"]["size"] > 20971520) {
-								    $errors[]="Your file is too large ( greater than 20 MB ).";
-								    $uploadOk = 0;
-								}
-								// Allow certain file formats
-								if($FileType != "doc" && $FileType != "pdf" && $FileType != "docx" && $FileType != "txt"  ) {
-								    $errors[]= "Only pdf, txt , doc & docx files can be uploaded !";
-								    $uploadOk = 0;
-								}
-								// Check if $uploadOk is set to 0 by an error
-								if ($uploadOk == 0 ) {
-								    foreach ($errors as $error) {
-								        $result[] = '<div class="alert alert-warning" role="alert">' . $error . '</div>' ;
-								    }
-								// if everything is ok, try to upload file
-								} else {
-								    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-								        $result[] = '<div class="alert alert-success" role="alert">The file : '. basename( $_FILES["fileToUpload"]["name"]). ' has been uploaded.</div>';
-
-								    } else {
-								        $result[] = '<div class="alert alert-success" role="alert">Sorry, there was an error uploading your file.</div>';
-								    }
-								}
-
-
-					}
 
 ?>
 <!DOCTYPE html>
@@ -184,9 +134,55 @@ $result = array();
 				<div class="box span12">
 					<div class="container">
 						<?php
-							foreach ($result as $statement) {
-						 echo '<div>' .  $statement . '</div>';
-							}	
+
+								if(isset($_FILES['fileToUpload'])){
+
+
+								$data = $user->data();
+								$errors= array();
+
+								$path = 'uploads/' . $data->username;
+
+								if (!file_exists($path)) {
+								    mkdir($path,0777);
+								}
+
+								$target_file = $path . "/" . basename($_FILES["fileToUpload"]["name"]);
+								$uploadOk = 1;
+								$FileType = pathinfo($target_file,PATHINFO_EXTENSION);
+
+								// Check if file already exists
+								if (file_exists($target_file)) {
+								    $errors[]="File already exists.";
+								    $uploadOk = 0;
+								}
+								// Check file size
+								if ($_FILES["fileToUpload"]["size"] > 20971520) {
+								    $errors[]="Your file is too large ( greater than 20 MB ).";
+								    $uploadOk = 0;
+								}
+								// Allow certain file formats
+								if($FileType != "doc" && $FileType != "pdf" && $FileType != "docx" && $FileType != "txt"  ) {
+								    $errors[]= "Only pdf, txt , doc & docx files can be uploaded !";
+								    $uploadOk = 0;
+								}
+								// Check if $uploadOk is set to 0 by an error
+								if ($uploadOk == 0 ) {
+								    foreach ($errors as $error) {
+								        echo '<div class="alert alert-warning" role="alert">' . $error . '</div>' ;
+								    }
+								// if everything is ok, try to upload file
+								} else {
+								    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+								        echo '<div class="alert alert-success" role="alert">The file : '. basename( $_FILES["fileToUpload"]["name"]). ' has been uploaded.</div>';
+
+								    } else {
+								        echo '<div class="alert alert-success" role="alert">Sorry, there was an error uploading your file.</div>';
+								    }
+								}
+
+
+								}
 						?>
 					</div>
 					<div class="box-header" data-original-title>
